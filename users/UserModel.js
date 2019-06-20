@@ -1,10 +1,15 @@
 const db = require("../data/dbConfig.js");
 
 module.exports = {
-  insert
+  insert,
+  find
 };
 
-async function add(user) {
+function find() {
+  return db("users");
+}
+
+async function insert(user) {
   const [id] = await db("users").insert(user, "id");
   return db("users")
     .where({ id })

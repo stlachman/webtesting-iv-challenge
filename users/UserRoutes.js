@@ -1,13 +1,24 @@
 const router = require("express").Router();
+const Users = require("./UserModel");
 
 router.get("/", (req, res) => {
-  res.status(200).json({
-    message: "Hello Users"
-  });
+  Users.find()
+    .then(users => {
+      res.status(200).json(users);
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error retrieving users" });
+    });
 });
 
 router.post("/", (req, res) => {
-  res.status(201).json({ something: "heree" });
+  Users.insert(req.body)
+    .then(user => {
+      res.status(201).json(user);
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error creating user" });
+    });
 });
 
 module.exports = router;
