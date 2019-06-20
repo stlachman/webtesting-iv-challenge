@@ -22,5 +22,11 @@ describe("server", () => {
           expect(res.body).toEqual({ message: "it's working" });
         });
     });
+
+    it("responds with content type json", () => {
+      return request(server)
+        .get("/")
+        .expect("Content-Type", /json/i);
+    });
   });
 });
