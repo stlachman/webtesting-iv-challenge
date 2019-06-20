@@ -21,4 +21,15 @@ router.post("/", (req, res) => {
     });
 });
 
+router.delete("/:id", (req, res) => {
+  const { id } = req.params;
+  Users.remove(id)
+    .then(user => {
+      res.status(204).end();
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error deleting user" });
+    });
+});
+
 module.exports = router;

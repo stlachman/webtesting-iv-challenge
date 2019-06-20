@@ -27,11 +27,45 @@ describe("User Routes", () => {
         .expect("Content-Type", /json/i);
     });
 
+    it("responds with status 201", async () => {
+      let user = { name: "falstaff" };
+      await request(server)
+        .post("/api/users")
+        .send(user)
+        .expect(201);
+    });
+
     it("inserts provided user into db", async () => {
       let user = { name: "john" };
       let inserted = await Users.insert(user);
 
       expect(inserted.name).toBe(user.name);
+    });
+  });
+
+  describe("DELETE /api/users", () => {
+    it("removes user from database", async () => {
+      let usersNumber;
+      usersNumber = await db("users");
+      expect(usersNumber).toHaveLength(0);
+      await Users.insert({ name: "Spider Man" });
+      await Users.insert({ name: "Green Goblin" });
+      usersNumber = await db("users");
+      expect(usersNumber).toHaveLength(2);
+    });
+
+    it("responds with status 204", async () => {
+      await request(server)
+        .delete("/api/users/2")
+        .expect(204);
+    });
+
+    it("responds with empty object", async () => {
+      await request(server)
+        .delete("/api/users/2")
+        .then(res => {
+          expect(res.body).toEqual({});
+        });
     });
   });
 });
