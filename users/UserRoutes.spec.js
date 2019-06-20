@@ -1,5 +1,4 @@
 const server = require("../api/server");
-const Users = require("./UserModel.js");
 const db = require("../data/dbConfig");
 const request = require("supertest");
 
@@ -35,25 +34,18 @@ describe("User Routes", () => {
         .expect(201);
     });
 
-    it("inserts provided user into db", async () => {
-      let user = { name: "john" };
-      let inserted = await Users.insert(user);
-
-      expect(inserted.name).toBe(user.name);
+    it("responds with the created user", async () => {
+      let user = { name: "falstaff" };
+      await request(server)
+        .post("/api/users")
+        .send(user)
+        .then(res => {
+          expect(res.body).toEqual({ id: 1, name: "falstaff" });
+        });
     });
   });
 
   describe("DELETE /api/users", () => {
-    it("removes user from database", async () => {
-      let usersNumber;
-      usersNumber = await db("users");
-      expect(usersNumber).toHaveLength(0);
-      await Users.insert({ name: "Spider Man" });
-      await Users.insert({ name: "Green Goblin" });
-      usersNumber = await db("users");
-      expect(usersNumber).toHaveLength(2);
-    });
-
     it("responds with status 204", async () => {
       await request(server)
         .delete("/api/users/2")
